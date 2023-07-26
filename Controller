@@ -1,0 +1,62 @@
+public with sharing class SampleController
+{
+    public string nameFile{get;set;}
+    public Blob contentFile{get;set;}
+    String[] filelines = new String[]{};
+    List<Lead> leadtoupload;
+    
+    /***This function reads the CSV file and inserts records into the lead object. ***/
+    public Pagereference ReadFile()
+    {
+        try{
+                //Convert the uploaded file which is in BLOB format into a string
+                nameFile =blobToString( contentFile,'ISO-8859-1');
+                
+                //Now sepatate every row of the excel file
+                filelines = nameFile.split('\n');
+                
+                //Iterate through every line and create a lead record for each row
+                leadtoupload = new List<Lead>();
+                for (Integer i=1;i<filelines.size();i++)
+                {
+                    String[] inputvalues = new String[]{};
+                    inputvalues = filelines[i].split(',');
+                    
+                    Lead ld = new lead();
+                    ld.LastName = inputvalues[0];
+                    ld.Company = inputvalues[1];       
+                    ld.Email = inputvalues[2];
+                    ld.Status = inputvalues[3];
+                    leadtoupload.add(ld);
+                }
+         }
+         catch(Exception e){
+                 ApexPages.Message errormsg = new ApexPages.Message(ApexPages.severity.ERROR,'An error has occured reading the CSV file'+e.getMessage());
+                ApexPages.addMessage(errormsg);
+         }       
+        //Finally, insert the collected records
+        try{
+            insert leadtoupload;
+        }
+        catch (Exception e)
+        {
+            ApexPages.Message errormsg = new ApexPages.Message(ApexPages.severity.ERROR,'An error has occured inserting the records'+e.getMessage());
+            ApexPages.addMessage(errormsg);
+        }    
+         PageReference myVFPage = new PageReference('/apex/SuccessFullmessage');
+       
+            myVFPage.setRedirect(true);
+            return myVFPage;
+    }
+   
+   
+    public static String blobToString(Blob input, String inCharset){
+        String hex = EncodingUtil.convertToHex(input);
+        System.assertEquals(0, hex.length() & 1);
+        final Integer bytesCount = hex.length() >> 1;
+        String[] bytes = new String[bytesCount];
+        for(Integer i = 0; i < bytesCount; ++i)
+            bytes[i] =  hex.mid(i << 1, 2);
+        return EncodingUtil.urlDecode('%' + String.join(bytes, '%'), inCharset);
+    }         
+}
