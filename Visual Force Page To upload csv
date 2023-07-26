@@ -1,0 +1,42 @@
+<apex:page controller="SampleController" lightningStyleSheets="true" showHeader="false"  sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+    <head>
+      <meta charset="utf-8" />
+      <meta http-equiv="x-ua-compatible" content="ie=edge" />
+      <title>Salesforce Lightning Design System Trailhead Module</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <!-- Import the Design System style sheet -->
+       
+      <apex:slds />
+    </head>
+   
+    <body >
+    <div class="slds-scope">
+   <apex:form >
+      <apex:pagemessages />
+      <apex:pageBlock >
+          
+             <!--  Component to allow user to upload file from local machine -->
+             
+          
+         
+          <div class="slds-box slds-box_small">
+             <div class="slds-align_absolute-center">
+                <label class="slds-form-element__label" for="form-element-01">Select File:</label>
+                 <div class="slds-box slds-box_small">
+                       <apex:inputFile value="{!contentFile}" filename="{!nameFile}" />
+                </div>
+             </div>
+              <div class="slds-align_absolute-center" style="padding:12px">
+                    <apex:commandButton action="{!ReadFile}" value="Upload" id="theButton" style="width:70px;"/>
+              </div>
+            
+         </div>
+          
+           
+      </apex:pageBlock>       
+   </apex:form> 
+        </div>
+     </body>
+</html>
+</apex:page>
